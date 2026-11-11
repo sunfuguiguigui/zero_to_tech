@@ -3,9 +3,12 @@
 // 文字实验室的"输入区"卡片。这一节给"开始分析"接上了后端：
 // 点按钮就把输入的文字 POST 给 /api/analyze，拿到结果通过 onResult 交给父组件。
 // 请求出问题时用 try/catch 接住，在按钮上方给一行提示，不让界面无声失效。
-// 后端地址暂时写死在下面，跟着课件，这一节最后会把它收进 .env.local。
+// 后端地址：开发时直连 localhost:8000；打包上线时不配这个变量，
+// 走相对路径 /api/...，由 Nginx 把 /api/ 反代到后端的 8000 端口。
 import { useState } from "react";
-const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
 
 
 export default function InputCard({ onResult }) {

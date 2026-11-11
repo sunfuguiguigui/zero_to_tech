@@ -15,23 +15,18 @@ from storage import init_db, save_record, get_history   # ← 这一行：import
 
 load_dotenv()                        # ← 读同目录下的 .env
 
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
+# 没配 .env 也不能让进程起不来：默认给空列表，走同源反代时其实用不到 CORS。
+ALLOWED_ORIGINS = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
 
-init_db()     
-    
-app = FastAPI()
-# ... CORS 等原有代码，一个字不动 ...
-
-init_db()                                               # ← 这一行：启动时确保表在
-     # ← 新增：跟存储层打交道，只经过这一行
+init_db()                            # ← 启动时确保表在（只调一次，别重复）
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS, 
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["GET", "POST"],
-    allow_credentials=True,          # ← 新增：允许跨源请求带上 cookie
+    allow_credentials=True,          # ← 允许跨源请求带上 cookie
 )
 
 def get_session_id(request: Request, response: Response) -> str:

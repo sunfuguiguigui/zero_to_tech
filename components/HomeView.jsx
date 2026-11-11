@@ -11,7 +11,9 @@ import Nav from "./Nav.jsx";
 import PageHeading from "./PageHeading.jsx";
 import AnimatedCardGrid from "./AnimatedCardGrid.jsx";
 import { home } from "../data/site.js";
-const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
 
 export default function HomeView() {
   const [data, setData] = useState(home);

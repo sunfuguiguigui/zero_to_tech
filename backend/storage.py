@@ -1,7 +1,10 @@
 # backend/storage.py
+import os
 import sqlite3
 
-DB_FILE = "history.db"
+# 用绝对路径：服务器上如果换工作目录启动（systemd / nohup / 别的目录），
+# 相对路径会在别处新建一个空库，表现为「分析成功但历史永远为空」。
+DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "history.db")
 
 def get_conn():
     conn = sqlite3.connect(DB_FILE)
